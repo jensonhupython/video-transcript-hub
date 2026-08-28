@@ -29,7 +29,7 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           el.classList.add("animate-fade-in-up");
           observer.disconnect();
         }
