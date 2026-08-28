@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, type ReactNode } from "react";
+import { Target, Zap, Briefcase } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
