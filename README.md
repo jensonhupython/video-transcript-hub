@@ -18,7 +18,7 @@ The site must include:
 
    - Footer with copyright "© 2026 Video Speed Reader"
 
-2. Authentication using Lovable's built-in Supabase-style auth (use whatever auth backend Lovable provides by default — Lovable Cloud is fine for this v1; we'll swap to a user-owned Supabase project in a later step):
+2. Authentication using Supabase Auth, backed by your own Supabase project (see "Environment variables" below):
 
    - Sign Up page with email + password
 
@@ -50,19 +50,32 @@ Out of scope for this v1: video upload widget, transcript display, payment, cust
 
 Those come in later milestones. Stick to landing page + auth + placeholder dashboard.
 
-This project was built with [Lovable](https://lovable.dev).
+## Tech stack
 
-## Build with Lovable
+Plain Vite + React single-page app (React Router) with Supabase Auth. Builds to
+a static SPA (`vite build` → `dist/`) suitable for static hosting on Vercel.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/5bd6a201-1c2c-4a51-8e0c-8f97e71ed918).
+## Environment variables
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+The app reads its Supabase configuration from Vite env vars at build time — no
+values are hardcoded. Create a `.env` (already present in this repo) with your
+own Supabase project's credentials:
+
+```sh
+VITE_SUPABASE_URL=https://<your-project-ref>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxx
+```
+
+`VITE_SUPABASE_PUBLISHABLE_KEY` is Supabase's browser-safe publishable key (the
+successor to the old "anon key"); it is RLS-gated and safe to ship to the client.
+
+When deploying to Vercel, add these same two variables under
+**Project → Settings → Environment Variables** so the production build picks them
+up.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
 git clone <this-repository-url>
