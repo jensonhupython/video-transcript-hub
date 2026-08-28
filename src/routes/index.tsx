@@ -49,19 +49,19 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
 
 const features = [
   {
-    icon: "🎯",
+    icon: Target,
     title: "高準確度逐字稿",
     subtitle: "High-accuracy transcripts",
     body: "Powered by OpenAI Whisper with full support for Chinese and English, so your words come out right the first time.",
   },
   {
-    icon: "⚡",
+    icon: Zap,
     title: "三分鐘交付",
     subtitle: "Three-minute turnaround",
     body: "Everything is processed in the background. Grab a coffee — you get an email the moment your transcript is ready.",
   },
   {
-    icon: "💼",
+    icon: Briefcase,
     title: "可商用授權",
     subtitle: "Commercial-use ready",
     body: "You own the output completely. Repurpose it into blog posts, course notes, or archives — however you like.",
@@ -130,8 +130,11 @@ function LandingPage() {
           {features.map((f, i) => (
             <Reveal key={f.title} delay={i * 120}>
               <article className="h-full rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40">
-                <div className="text-3xl" aria-hidden>
-                  {f.icon}
+                <div
+                  aria-hidden
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-primary"
+                >
+                  <f.icon className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold">{f.title}</h3>
                 <p className="text-sm font-medium text-primary">
