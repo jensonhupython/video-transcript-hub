@@ -1,42 +1,26 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-
-export const Route = createFileRoute("/auth")({
-  head: () => ({
-    meta: [
-      { title: "Sign in — Video Speed Reader" },
-      {
-        name: "description",
-        content: "Sign in or create your Video Speed Reader account.",
-      },
-      { property: "og:title", content: "Sign in — Video Speed Reader" },
-      {
-        property: "og:description",
-        content: "Sign in or create your Video Speed Reader account.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: AuthPage,
-});
 
 type Mode = "signin" | "signup";
 
-function AuthPage() {
+export default function AuthPage({ initialMode = "signin" }: { initialMode?: Mode }) {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<Mode>("signin");
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    document.title = "Sign in — Video Speed Reader";
+  }, []);
+
   // Already signed in? Go straight to the app.
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/app", replace: true });
+      if (data.session) navigate("/app", { replace: true });
     });
   }, [navigate]);
 
@@ -54,7 +38,7 @@ function AuthPage() {
         });
         if (error) throw error;
         if (data.session) {
-          navigate({ to: "/app" });
+          navigate("/app");
         } else {
           setNotice("Check your email to confirm your account, then sign in.");
           setMode("signin");
@@ -62,7 +46,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/app" });
+        navigate("/app");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");

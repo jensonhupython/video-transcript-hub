@@ -1,27 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, type ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { Target, Zap, Briefcase } from "lucide-react";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Video Speed Reader — 上傳影片，三分鐘內拿到逐字稿" },
-      {
-        name: "description",
-        content:
-          "Upload your video, get a clean transcript in three minutes. High-accuracy, commercial-use ready transcripts for creators, educators, and engineers.",
-      },
-      { property: "og:title", content: "Video Speed Reader" },
-      {
-        property: "og:description",
-        content: "上傳影片，三分鐘內拿到逐字稿。 Upload your video, get a clean transcript in three minutes.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: LandingPage,
-});
 
 function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -68,7 +47,11 @@ const features = [
   },
 ];
 
-function LandingPage() {
+export default function LandingPage() {
+  useEffect(() => {
+    document.title = "Video Speed Reader — 上傳影片，三分鐘內拿到逐字稿";
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
