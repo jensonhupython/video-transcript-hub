@@ -35,27 +35,29 @@
 
 :root {
   --radius: 0.75rem;
-  /* Dark theme: near-black with violet accents */
-  --background: oklch(0.11 0.015 285);
-  --foreground: oklch(0.95 0.01 290);
-  --card: oklch(0.15 0.02 285);
-  --card-foreground: oklch(0.95 0.01 290);
-  --popover: oklch(0.15 0.02 285);
-  --popover-foreground: oklch(0.95 0.01 290);
-  --primary: oklch(0.65 0.22 290);
-  --primary-foreground: oklch(0.98 0.005 290);
-  --secondary: oklch(0.2 0.03 285);
-  --secondary-foreground: oklch(0.95 0.01 290);
-  --muted: oklch(0.18 0.02 285);
-  --muted-foreground: oklch(0.68 0.03 290);
-  --accent: oklch(0.22 0.05 290);
-  --accent-foreground: oklch(0.95 0.02 290);
-  --destructive: oklch(0.6 0.2 25);
-  --destructive-foreground: oklch(0.98 0.005 290);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.65 0.22 290);
-  --glow: oklch(0.65 0.22 290 / 45%);
+  /* Steampunk theme: deep teal ground, copper/brass metals,
+     rust-crimson accents, parchment-cream text — drawn from the
+     clockwork-cat artwork. */
+  --background: oklch(0.25 0.045 198);
+  --foreground: oklch(0.91 0.035 82);
+  --card: oklch(0.30 0.05 199);
+  --card-foreground: oklch(0.91 0.035 82);
+  --popover: oklch(0.30 0.05 199);
+  --popover-foreground: oklch(0.91 0.035 82);
+  --primary: oklch(0.68 0.125 58);
+  --primary-foreground: oklch(0.22 0.03 60);
+  --secondary: oklch(0.34 0.055 62);
+  --secondary-foreground: oklch(0.92 0.03 82);
+  --muted: oklch(0.31 0.03 199);
+  --muted-foreground: oklch(0.74 0.06 74);
+  --accent: oklch(0.44 0.08 60);
+  --accent-foreground: oklch(0.94 0.025 82);
+  --destructive: oklch(0.55 0.18 30);
+  --destructive-foreground: oklch(0.96 0.02 82);
+  --border: oklch(0.72 0.10 62 / 28%);
+  --input: oklch(0.72 0.10 62 / 24%);
+  --ring: oklch(0.68 0.125 58);
+  --glow: oklch(0.68 0.14 55 / 50%);
 }
 
 @layer base {
@@ -68,6 +70,14 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* Engraved Victorian display face for headings (Latin glyphs); CJK
+     falls back to the system serif. Body text stays in the sans stack. */
+  h1,
+  h2,
+  h3 {
+    font-family: "Cinzel", "Playfair Display", Georgia, "Noto Serif TC", serif;
   }
 }
 
@@ -92,7 +102,12 @@
 }
 
 @utility text-gradient {
-  background: linear-gradient(120deg, var(--foreground), var(--primary) 140%);
+  background: linear-gradient(
+    115deg,
+    var(--foreground) 0%,
+    var(--primary) 55%,
+    var(--destructive) 115%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
