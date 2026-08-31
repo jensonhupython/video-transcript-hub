@@ -1,64 +1,26 @@
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from './types';
+/**
+ * @deprecated Import from '@/lib/supabase/client' (browser) or
+ * '@/lib/supabase/server' (server) instead. This file is a thin
+ * backward-compat shim kept so leftover imports of the old path
+ * continue to resolve during the Vite → Next.js migration.
+ */
+import { createClient as createBrowserSupabaseClient } from '@/lib/supabase/client'
 
-function isNewSupabaseApiKey(value: string): boolean {
-  return value.startsWith('sb_publishable_') || value.startsWith('sb_secret_');
-}
+export { createClient } from '@/lib/supabase/client'
 
-function createSupabaseFetch(supabaseKey: string): typeof fetch {
-  return (input, init) => {
-    const headers = new Headers(
-      typeof Request !== 'undefined' && input instanceof Request ? input.headers : undefined,
-    );
+type SupabaseBrowserClient = ReturnType<typeof createBrowserSupabaseClient>
 
-    if (init?.headers) {
-      new Headers(init.headers).forEach((value, key) => headers.set(key, value));
-    }
+let _supabase: SupabaseBrowserClient | undefined
 
-    // New Supabase API keys are opaque strings, not bearer JWTs.
-    if (isNewSupabaseApiKey(supabaseKey) && headers.get('Authorization') === `Bearer ${supabaseKey}`) {
-      headers.delete('Authorization');
-    }
-
-    headers.set('apikey', supabaseKey);
-    return fetch(input, { ...init, headers });
-  };
-}
-
-function createSupabaseClient() {
-  // Read from Vite build-time env only. No hardcoded URLs or keys.
-  const SUPABASE_URL = import.meta.env['VITE_SUPABASE_URL'];
-  const SUPABASE_PUBLISHABLE_KEY = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'];
-
-  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-    const missing = [
-      ...(!SUPABASE_URL ? ['VITE_SUPABASE_URL'] : []),
-      ...(!SUPABASE_PUBLISHABLE_KEY ? ['VITE_SUPABASE_PUBLISHABLE_KEY'] : []),
-    ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Set them in your .env file and in the Vercel project settings.`;
-    console.error(`[Supabase] ${message}`);
-    throw new Error(message);
-  }
-
-  return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-    global: {
-      fetch: createSupabaseFetch(SUPABASE_PUBLISHABLE_KEY),
-    },
-    auth: {
-      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-  });
-}
-
-let _supabase: ReturnType<typeof createSupabaseClient> | undefined;
-
-// Single, lazily-initialised client. Import it like:
-// import { supabase } from "@/integrations/supabase/client";
-export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
+/**
+ * @deprecated Use `createClient()` from '@/lib/supabase/client' inside
+ * client components instead. Retained to keep old
+ * `import { supabase } from '@/integrations/supabase/client'` imports
+ * working; lazily instantiated on first property access.
+ */
+export const supabase = new Proxy({} as SupabaseBrowserClient, {
   get(_, prop, receiver) {
-    if (!_supabase) _supabase = createSupabaseClient();
-    return Reflect.get(_supabase, prop, receiver);
+    if (!_supabase) _supabase = createBrowserSupabaseClient()
+    return Reflect.get(_supabase, prop, receiver)
   },
-});
+})

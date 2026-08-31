@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useRef, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Target, Zap, Briefcase } from "lucide-react";
 
 function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
@@ -61,7 +63,7 @@ export default function LandingPage() {
             Video Speed Reader
           </span>
           <Link
-            to="/auth"
+            href="/sign-in"
             className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
           >
             Sign in / 登入
@@ -92,7 +94,7 @@ export default function LandingPage() {
           <Reveal delay={240}>
             <div className="mt-10">
               <Link
-                to="/auth"
+                href="/sign-in"
                 className="inline-flex items-center justify-center rounded-xl bg-primary px-8 py-3 text-base font-semibold text-primary-foreground transition hover:opacity-90 glow-card"
               >
                 Sign in / 登入

@@ -1,11 +1,14 @@
+"use client";
+
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 type Mode = "signin" | "signup";
 
-export default function AuthPage({ initialMode = "signin" }: { initialMode?: Mode }) {
-  const navigate = useNavigate();
+export default function AuthForm({ mode: initialMode }: { mode: Mode }) {
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,16 +16,13 @@ export default function AuthPage({ initialMode = "signin" }: { initialMode?: Mod
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    document.title = "Sign in — Video Speed Reader";
-  }, []);
-
   // Already signed in? Go straight to the app.
   useEffect(() => {
+    const supabase = createClient();
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/app", { replace: true });
+      if (data.session) router.replace("/app");
     });
-  }, [navigate]);
+  }, [router]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -30,6 +30,7 @@ export default function AuthPage({ initialMode = "signin" }: { initialMode?: Mod
     setNotice(null);
     setLoading(true);
     try {
+      const supabase = createClient();
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -38,7 +39,8 @@ export default function AuthPage({ initialMode = "signin" }: { initialMode?: Mod
         });
         if (error) throw error;
         if (data.session) {
-          navigate("/app");
+          router.push("/app");
+          router.refresh();
         } else {
           setNotice("Check your email to confirm your account, then sign in.");
           setMode("signin");
@@ -46,7 +48,8 @@ export default function AuthPage({ initialMode = "signin" }: { initialMode?: Mod
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/app");
+        router.push("/app");
+        router.refresh();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -59,7 +62,7 @@ export default function AuthPage({ initialMode = "signin" }: { initialMode?: Mod
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="border-b border-border/60">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-4 sm:px-6">
-          <Link to="/" className="text-base font-semibold tracking-tight">
+          <Link href="/" className="text-base font-semibold tracking-tight">
             Video Speed Reader
           </Link>
         </div>
